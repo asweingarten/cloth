@@ -9,13 +9,24 @@
 
   export let name;
 
+  // Parameters
+  let nscale = 70;
+  let xnoff = 0.0015; // diff between lines
+  let ynoff = 0.020;  // diff between points
+
+  let dimensions = {width: 500, height: 500};
+  let layer;
+
+  function rebuild() {
+    const newPaths = build(dimensions);
+    layer.destroyChildren();
+    cloth(layer, newPaths);
+  }
+
   function build ({width, height}) {
     let paths = [];
-    let xnoff = 0.0015; // diff between lines
-    let ynoff = 0.020;  // diff between points
-    let nscale = 70;
-    let xdetail = 640; //default 640
-    let ydetail = 640; //default 640
+    let xdetail = 40; //default 640
+    let ydetail = 40; //default 640
     let xlo = 1 * width / 4;
     let xhi = 3 * width / 4;
     let ylo = 1 * height / 4;
@@ -49,39 +60,20 @@
   }
 
   function cloth (layer, paths) {
-  //drawing
     console.time("cloth");
-    /* let xnoff = 0.0015; // diff between lines */
-    /* let ynoff = 0.020;  // diff between points */
-    /* let nscale = 70; */
     for (let eout of paths) {
-      /* for (let ein of eout) { */
-      /*   ein.x = ein.ox; */
-      /*   ein.y = ein.oy; */
-      /*   ein.x += perlin2(0 + (ein.ox * xnoff), 0 + (ein.oy * ynoff)) * nscale; */
-      /*   ein.y += perlin2(0 + (ein.ox * xnoff), 0 + (ein.oy * ynoff)) * nscale; */
-      /* } */
-      //drawPath (eout, false, p5.line);
       const points = eout.flatMap(val => [val.x, val.y]);
       layer.add(new Konva.Line({
         points,
         stroke: '#777777',
-        tension: 1
+        tension: 0.5
       }));
-      /* for (let iter = 0; iter < eout.length - 1; iter++) { */
-      /*   let curr = eout[iter]; */
-      /*   let next = eout[(iter + 1) % eout.length]; */
-
-      /*   /1* p5.line (curr.x, curr.y, next.x, next.y); *1/ */
-      /*   layer.add(new Konva.Line([curr.x, curr.y, next.x, next.y])); */
-      /* } */
     }
     layer.draw();
     console.timeEnd("cloth");
   }
 
   let canvas;
-  let layer;
   onMount(() => {
     const stage = new Konva.Stage({
       container: 'my-stage',
@@ -93,7 +85,7 @@
 
     // add the layer to the stage
     stage.add(layer);
-    let paths = build( {width: 500, height: 500});
+    let paths = build(dimensions);
     cloth(layer, paths);
 
     // draw the image
@@ -126,9 +118,11 @@
 </style>
 
 <div>
-  <h1>Hello {name}!</h1>
+  <h1>Cloth</h1>
+
+  <label for="">
+    nscale: perlin noise always returns a value between 0 and 1, so nscale brings that up to the desired amplitude to get a cloth-like effect
+    <input type="range" min="0" max="100" step="0.5" bind:value={nscale} on:mouseup={rebuild}>
+  </label>
   <div id="my-stage"></div>
-<!--  <canvas id="my-stage"
-          bind:this={canvas}
-  ></canvas> -->
 </div>
