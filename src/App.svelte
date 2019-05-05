@@ -10,9 +10,12 @@
   export let name;
 
   // Parameters
-  let nscale = 70;
+  let noiseScaleX = 70;
+  let noiseScaleY = 70;
   let xnoff = 0.0015; // diff between lines
   let ynoff = 0.020;  // diff between points
+  let xdetail = 40; //default 640
+  let ydetail = 40; //default 640
 
   let dimensions = {width: 500, height: 500};
   let layer;
@@ -25,8 +28,6 @@
 
   function build ({width, height}) {
     let paths = [];
-    let xdetail = 40; //default 640
-    let ydetail = 40; //default 640
     let xlo = 1 * width / 4;
     let xhi = 3 * width / 4;
     let ylo = 1 * height / 4;
@@ -52,8 +53,8 @@
         ein.oy = ein.y;
         ein.x = ein.ox;
         ein.y = ein.oy;
-        ein.x += perlin2(0 + (ein.ox * xnoff), 0 + (ein.oy * ynoff)) * nscale;
-        ein.y += perlin2(0 + (ein.ox * xnoff), 0 + (ein.oy * ynoff)) * nscale;
+        ein.x += perlin2(0 + (ein.ox * xnoff), 0 + (ein.oy * ynoff)) * noiseScaleX;
+        ein.y += perlin2(0 + (ein.ox * xnoff), 0 + (ein.oy * ynoff)) * noiseScaleY;
       }
     }
     return paths;
@@ -121,8 +122,28 @@
   <h1>Cloth</h1>
 
   <label for="">
-    nscale: perlin noise always returns a value between 0 and 1, so nscale brings that up to the desired amplitude to get a cloth-like effect
-    <input type="range" min="0" max="100" step="0.5" bind:value={nscale} on:mouseup={rebuild}>
+    x noise offset:
+    <input type="range" min="1" max="200" step="1" bind:value={xnoff} on:mouseup={rebuild}>
+  </label>
+  <label for="">
+    y noise offset:
+    <input type="range" min="1" max="200" step="1" bind:value={ynoff} on:mouseup={rebuild}>
+  </label>
+  <label for="">
+    x detail: number of paths
+    <input type="range" min="1" max="200" step="1" bind:value={xdetail} on:mouseup={rebuild}>
+  </label>
+  <label for="">
+    y detail: number of points for each path
+    <input type="range" min="1" max="200" step="1" bind:value={ydetail} on:mouseup={rebuild}>
+  </label>
+  <label for="">
+    noise scale X: perlin noise always returns a value between 0 and 1, so nscale brings that up to the desired amplitude to get a cloth-like effect
+    <input type="range" min="0" max="100" step="0.5" bind:value={noiseScaleX} on:mouseup={rebuild}>
+  </label>
+  <label for="">
+    noise scale Y: perlin noise always returns a value between 0 and 1, so nscale brings that up to the desired amplitude to get a cloth-like effect
+    <input type="range" min="0" max="100" step="0.5" bind:value={noiseScaleY} on:mouseup={rebuild}>
   </label>
   <div id="my-stage"></div>
 </div>
