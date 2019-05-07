@@ -3,9 +3,7 @@
 // - test it with drawing a constant shape.
   import { onMount } from 'svelte';
   import Konva from 'konva';
-  import { perlin2 } from './noise.js';
-  import linspace from './linspace';
-
+  import build from './path';
 
   export let name;
 
@@ -21,44 +19,18 @@
   let layer;
 
   function rebuild() {
-    const newPaths = build(dimensions);
+    const newPaths = build(dimensions
+                          ,noiseScaleX
+                          ,noiseScaleY
+                          ,xnoff
+                          ,ynoff
+                          ,xdetail
+                          ,ydetail
+                          );
     layer.destroyChildren();
     cloth(layer, newPaths);
   }
 
-  function build ({width, height}) {
-    let paths = [];
-    let xlo = 1 * width / 4;
-    let xhi = 3 * width / 4;
-    let ylo = 1 * height / 4;
-    let yhi = 3 * height / 4;
-
-    let xset = linspace (xlo, xhi, xdetail);
-    let yset = linspace (ylo, yhi, ydetail);
-
-    //building paths
-    for (let xiter = 0; xiter < xset.length; xiter++) {
-      let path = [];
-      for (let yiter = 0; yiter < yset.length; yiter++) {
-        let xin = xset[xiter];
-        let yin = yset[yiter];
-        path.push ( { x: xin, y: yin } );
-      }
-      paths.push (path);
-    }
-    //hold original coordinates for each vector in each of s.paths path
-    for (let eout of paths) {
-      for (let ein of eout) {
-        ein.ox = ein.x;
-        ein.oy = ein.y;
-        ein.x = ein.ox;
-        ein.y = ein.oy;
-        ein.x += perlin2(0 + (ein.ox * xnoff), 0 + (ein.oy * ynoff)) * noiseScaleX;
-        ein.y += perlin2(0 + (ein.ox * xnoff), 0 + (ein.oy * ynoff)) * noiseScaleY;
-      }
-    }
-    return paths;
-  }
 
   function cloth (layer, paths) {
     console.time("cloth");
@@ -86,7 +58,14 @@
 
     // add the layer to the stage
     stage.add(layer);
-    let paths = build(dimensions);
+    let paths = build(dimensions
+                      ,noiseScaleX
+                      ,noiseScaleY
+                      ,xnoff
+                      ,ynoff
+                      ,xdetail
+                      ,ydetail
+                      );
     cloth(layer, paths);
 
     // draw the image
@@ -123,11 +102,11 @@
 
   <label for="">
     x noise offset:
-    <input type="range" min="1" max="200" step="1" bind:value={xnoff} on:mouseup={rebuild}>
+    <input type="range" min="0" max="0.1" step="0.0005" bind:value={xnoff} on:mouseup={rebuild}>
   </label>
   <label for="">
     y noise offset:
-    <input type="range" min="1" max="200" step="1" bind:value={ynoff} on:mouseup={rebuild}>
+    <input type="range" min="0" max="0.1" step="0.0005" bind:value={ynoff} on:mouseup={rebuild}>
   </label>
   <label for="">
     x detail: number of paths
