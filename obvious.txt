@@ -1,2 +1,2 @@
 - automatically sample design space
-- animations over parameters
+- reify animations so they can be played in an order
