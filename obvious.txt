@@ -1,0 +1,2 @@
+- automatically sample design space
+- animations over parameters

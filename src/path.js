@@ -2,12 +2,13 @@ import linspace from './linspace.js';
 import { perlin2 } from './noise.js';
 
 function build ({width, height}
-                , noiseScaleX
-                , noiseScaleY
-                , xnoff
-                , ynoff
-                , xdetail
-                , ydetail
+                , { noiseScaleX
+                  , noiseScaleY
+                  , xnoff
+                  , ynoff
+                  , xdetail
+                  , ydetail
+                  }
   ) {
   let paths = [];
   let xlo = 1 * width / 4;
