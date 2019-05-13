@@ -4,6 +4,8 @@
   import { onMount } from 'svelte';
   import Konva from 'konva';
   import build from './path';
+  import {perlin2} from './noise';
+  import perlin from './perlin';
 
   import Animate from './Animate.svelte';
 
@@ -51,6 +53,37 @@
     console.timeEnd("cloth");
   }
 
+  function topo(layer) {
+    const points = [];
+    for (let x = 0; x < dimensions.width; x++) {
+      for (let y = 0; y < dimensions.height; y++) {
+
+        let noise = perlin(x * 0.05, y * 0.05) ;
+        /* console.log(`${noise}`); */
+        if (noise > 0.31 && noise < 0.33) {
+          points.push({x,y});
+        }
+        if (noise > 0.51 && noise < 0.53) {
+          points.push({x,y});
+        }
+        if (noise > 0.71 && noise < 0.73) {
+          points.push({x,y});
+        }
+      }
+    }
+    points.forEach( ({x,y}) => {
+      layer.add(new Konva.Circle({
+        x,
+        y,
+        radius: 1,
+        fill: 'black'
+      }));
+    });
+
+    layer.draw();
+
+  }
+
   let canvas;
   onMount(() => {
     const stage = new Konva.Stage({
@@ -64,7 +97,8 @@
     // add the layer to the stage
     stage.add(layer);
     let paths = build(dimensions, parameters);
-    cloth(layer, paths);
+    /* cloth(layer, paths); */
+    topo(layer);
 
     // draw the image
     /* layer.draw(); */

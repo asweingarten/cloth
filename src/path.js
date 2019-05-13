@@ -32,12 +32,8 @@ function build ({width, height}
   //hold original coordinates for each vector in each of s.paths path
   for (let eout of paths) {
     for (let ein of eout) {
-      ein.ox = ein.x;
-      ein.oy = ein.y;
-      ein.x = ein.ox;
-      ein.y = ein.oy;
-      ein.x += perlin2(0 + (ein.ox * xnoff), 0 + (ein.oy * ynoff)) * noiseScaleX;
-      ein.y += perlin2(0 + (ein.ox * xnoff), 0 + (ein.oy * ynoff)) * noiseScaleY;
+      ein.x += perlin2( (ein.x * xnoff),  (ein.y * ynoff)) * noiseScaleX;
+      ein.y += perlin2( (ein.x * xnoff),  (ein.y * ynoff)) * noiseScaleY;
     }
   }
   return paths;
